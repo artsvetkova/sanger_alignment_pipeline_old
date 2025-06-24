@@ -1,0 +1,58 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%environment
+    export BOOST_ROOT=/usr
+    export PATH=/opt/tracy/bin:$PATH
+    export CROMWELL_HOME=/opt/cromwell
+
+%post
+    apt-get update && apt-get install -y \
+        wget \
+        autoconf \
+        build-essential \
+        cmake \
+        g++ \
+        gfortran \
+        git \
+        libcurl4-gnutls-dev \
+        hdf5-tools \
+        libboost-date-time-dev \
+        libboost-program-options-dev \
+        libboost-system-dev \
+        libboost-filesystem-dev \
+        libboost-iostreams-dev \
+        libbz2-dev \
+        libdeflate-dev \
+        libhdf5-dev \
+        libncurses-dev \
+        liblzma-dev \
+        pkg-config \
+        zlib1g-dev \
+        openjdk-11-jre-headless \
+        bash \
+&& apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# ADD PYTHON MATPLOTLIB JSON NUMPY
+
+    # tracy
+    cd /opt && \
+    git clone --recursive https://github.com/gear-genomics/tracy.git && \
+    cd tracy && \
+    make STATIC=1 all && \
+    make install
+
+    # cromwell
+    mkdir -p /opt/cromwell && \
+        cd /opt/cromwell && \
+        wget https://github.com/broadinstitute/cromwell/releases/download/89/cromwell-89.jar 
+    mkdir -p /opt/cromwell/bin && \
+        cd /opt/cromwell/bin && \
+        touch cromwell && \
+        echo '#!/bin/bash' >> cromwell && \
+        echo 'exec java -jar /opt/cromwell/cromwell-89.jar "$@"' >> cromwell && \
+        chmod +x cromwell
+    
+    
+%runscript
+    exec cromwell "$@"

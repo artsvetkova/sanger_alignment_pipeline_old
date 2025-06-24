@@ -1,0 +1,4 @@
+# heavy singularity images
+*.sif
+
+bioconvert_dependencies.yml

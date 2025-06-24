@@ -1,0 +1,4 @@
+{
+    "ab1_alignment_pipe.reference_fasta" : "/home/tsvetkova.ad/sanger_pipe/data/226-fix_79.fa",
+    "ab1_alignment_pipe.path_to_ab1_files": "/home/tsvetkova.ad/sanger_pipe/data/*.ab1"
+}
